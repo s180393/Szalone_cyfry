@@ -4,38 +4,122 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SzaloneCyfry
 {
-    public class Game1 : Game
+    public partial class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        protected SpriteBatch _spriteBatch;
+        MouseState mouseState;
+        Rectangle Cursor;
+        CurrentScene scene;
+
+        private void UpdateCursorPosition()
+        {
+            mouseState = Mouse.GetState();
+            Cursor.X = mouseState.X;
+            Cursor.Y = mouseState.Y;
+        }
+
+        private void ButtonEvents()
+        {
+            //Start
+            if (scene == CurrentScene.Start)
+            {
+                if ((recStartButton.Intersects(Cursor)))
+                {
+                    colStartButton = Color.Green;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        scene = CurrentScene.Play;
+                    }
+                }
+                else
+                {
+                    colStartButton = Color.White;
+                }
+                if ((recQuitButton.Intersects(Cursor)))
+                {
+                    colQuitButton = Color.Green;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        Exit();
+                    }
+                }
+                else
+                {
+                    colQuitButton = Color.White;
+                }
+            }
+            //Play
+            else if (scene == CurrentScene.Play)
+            {
+                if ((recMenuButton.Intersects(Cursor)))
+                {
+                    colMenuButton = Color.Green;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        scene = CurrentScene.Menu;
+                    }
+                }
+                else
+                {
+                    colMenuButton = Color.White;
+                }
+            }
+            //Menu
+            else if (scene == CurrentScene.Menu)
+            {
+                if ((recQuitButton.Intersects(Cursor)))
+                {
+                    colQuitButton = Color.Green;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        //Exit();
+                        scene = CurrentScene.Play;
+                    }
+                }
+                else
+                {
+                    colQuitButton = Color.White;
+                }
+            }
+        }
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            IsMouseVisible = true;
+            Window.Title = "Szalone Cyfry";
+            _graphics.PreferredBackBufferWidth = 1024;
+            _graphics.PreferredBackBufferHeight = 768;
+            _graphics.ApplyChanges();
+            scene = CurrentScene.Start;
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            LoadContentStart();
+            LoadContentGame();
+            LoadContentMenu();
+            
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
+            if (scene == CurrentScene.Start)
+                UpdateStart();
+            if (scene == CurrentScene.Play)
+                UpdateGame();
+            if (scene == CurrentScene.Menu)
+                UpdateMenu();
 
             base.Update(gameTime);
         }
@@ -43,8 +127,12 @@ namespace SzaloneCyfry
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
+            if (scene == CurrentScene.Start)
+                DrawStart();
+            if (scene == CurrentScene.Play)
+                DrawGame();
+            if (scene == CurrentScene.Menu)
+                DrawMenu();
 
             base.Draw(gameTime);
         }
