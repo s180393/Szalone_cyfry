@@ -10,7 +10,11 @@ namespace SzaloneCyfry
         protected SpriteBatch _spriteBatch;
         MouseState mouseState;
         Rectangle Cursor;
+        bool ttt = false;
         CurrentScene scene;
+        Rectangle recBackground;
+        Texture2D texBackground;
+        Color colBackground = Color.White;
 
         private void UpdateCursorPosition()
         {
@@ -29,7 +33,7 @@ namespace SzaloneCyfry
                     colStartButton = Color.Green;
                     if (mouseState.LeftButton == ButtonState.Pressed)
                     {
-                        scene = CurrentScene.Play;
+                        scene = CurrentScene.HowToPlay;
                     }
                 }
                 else
@@ -38,7 +42,7 @@ namespace SzaloneCyfry
                 }
                 if ((recQuitButton.Intersects(Cursor)))
                 {
-                    colQuitButton = Color.Green;
+                    colQuitButton = Color.Red;
                     if (mouseState.LeftButton == ButtonState.Pressed)
                     {
                         Exit();
@@ -47,6 +51,57 @@ namespace SzaloneCyfry
                 else
                 {
                     colQuitButton = Color.White;
+                }
+            }
+            //Lose
+            else if (scene == CurrentScene.Lose)
+            {
+                //Quit
+                if ((recQuitButton.Intersects(Cursor)))
+                {
+                    colQuitButton = Color.Red;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        Exit();
+                    }
+                }
+                else
+                {
+                    colQuitButton = Color.White;
+                }
+            }
+            //Win
+            else if (scene == CurrentScene.Win)
+            {
+                //Quit
+                if ((recQuitButton.Intersects(Cursor)))
+                {
+                    colQuitButton = Color.Red;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        Exit();
+                    }
+                }
+                else
+                {
+                    colQuitButton = Color.White;
+                }
+            }
+            //HowToPlay
+            else if (scene == CurrentScene.HowToPlay)
+            {
+                //Start
+                if ((recStartButton.Intersects(Cursor)))
+                {
+                    colStartButton = Color.Green;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        scene = CurrentScene.Play;
+                    }
+                }
+                else
+                {
+                    colStartButton = Color.White;
                 }
             }
             //Play
@@ -68,18 +123,60 @@ namespace SzaloneCyfry
             //Menu
             else if (scene == CurrentScene.Menu)
             {
+                //Quit
                 if ((recQuitButton.Intersects(Cursor)))
                 {
-                    colQuitButton = Color.Green;
+                    colQuitButton = Color.Red;
                     if (mouseState.LeftButton == ButtonState.Pressed)
                     {
-                        //Exit();
-                        scene = CurrentScene.Play;
+                        Exit();
                     }
                 }
                 else
                 {
                     colQuitButton = Color.White;
+                }
+                //Pause
+                if (recPauseButton.Intersects(Cursor))
+                {
+                    colPauseButton = Color.Yellow;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        ttt = true;
+                        scene = CurrentScene.Play;
+                        uses = 0;
+                    }
+                }
+                else
+                {
+                    colPauseButton = Color.White;
+                }
+                //Resume
+                if ((recResumeButton.Intersects(Cursor)))
+                {
+                    colResumeButton = Color.Green;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        scene = CurrentScene.Play;
+                        ttt = false;
+                    }
+                }
+                else
+                {
+                    colResumeButton = Color.White;
+                }
+                //Stop
+                if ((recStopButton.Intersects(Cursor)))
+                {
+                    colStopButton = Color.Orange;
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        scene = CurrentScene.Lose;
+                    }
+                }
+                else
+                {
+                    colStopButton = Color.White;
                 }
             }
         }
@@ -99,6 +196,7 @@ namespace SzaloneCyfry
             _graphics.ApplyChanges();
             scene = CurrentScene.Start;
             base.Initialize();
+            uses = 1;
         }
 
         protected override void LoadContent()
@@ -107,7 +205,9 @@ namespace SzaloneCyfry
             LoadContentStart();
             LoadContentGame();
             LoadContentMenu();
-            
+            LoadContentLose();
+            LoadContentWin();
+            LoadContentHow();
         }
 
         protected override void Update(GameTime gameTime)
@@ -117,10 +217,15 @@ namespace SzaloneCyfry
             if (scene == CurrentScene.Start)
                 UpdateStart();
             if (scene == CurrentScene.Play)
-                UpdateGame();
+                if (ttt!=true) UpdateGame();
+            if (scene == CurrentScene.Lose)
+                UpdateLose();
+            if (scene == CurrentScene.Win)
+                UpdateWin();
             if (scene == CurrentScene.Menu)
                 UpdateMenu();
-
+            if (scene == CurrentScene.HowToPlay)
+                UpdateHow();
             base.Update(gameTime);
         }
 
@@ -133,7 +238,12 @@ namespace SzaloneCyfry
                 DrawGame();
             if (scene == CurrentScene.Menu)
                 DrawMenu();
-
+            if (scene == CurrentScene.Lose)
+                DrawLose();
+            if (scene == CurrentScene.Win)
+                DrawWin();
+            if (scene == CurrentScene.HowToPlay)
+                DrawHow();
             base.Draw(gameTime);
         }
     }

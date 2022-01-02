@@ -2,6 +2,6 @@
 {
     enum CurrentScene
     {
-        Start, Play, Menu
+        Start, Play, Menu, Win, Lose, HowToPlay
     };
 }

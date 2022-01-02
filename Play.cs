@@ -5,151 +5,34 @@ using Microsoft.Xna.Framework.Input;
 namespace SzaloneCyfry
 {
     public partial class Game1 : Game
-    {//3 minuty gitówa
-        Texture2D texSquare, texMenuButton, texScore, texGround, texObstacle;
+    {
+        Texture2D texSquare, texMenuButton, texScore, texGround, texObstacleD, texObstacleH;
         Rectangle recSquare, recMenuButton, recScore, recGround, recObstacleH1, recObstacleD1, recObstacleH2, recObstacleD2, recObstacleH3, recObstacleD3, recObstacleH4, recObstacleD4;
-        Vector2 vecSpeed, vecSpeedl;
+        Vector2 vecSpeed;
         Color colMenuButton = Color.White;
         Color blank = Color.White;
+        int uses;
         int temp;
         int c;
+        int score=0;
         int change;
-        int level1, level2, level3, level4;
         int tmp = 342;
         int speed = 1;
         int number = 1;
+        int exception = 1;
         int log = 1;
         int move1 = 0, move2 = 0, move3 = 0, move4 = 0;
         private static System.Timers.Timer counterAnim;
-        private static System.Timers.Timer go;
         private SpriteFont font;
-        private int showSpeed = 0;
-        private void animObstacle()
+        
+        private void Scoring()
         {
-            counterAnim = new System.Timers.Timer();
-            go = new System.Timers.Timer();
-            counterAnim.Interval = 50000 - log;
-            go.Interval = 1000;
-            counterAnim.Elapsed += CounterAnim_Elapsed;
-            go.Elapsed += CounterAnim_Elapsed;
-            counterAnim.AutoReset = true;
-            go.AutoReset = false;
-            counterAnim.Enabled = true;
-            go.Enabled = true;
-            log = 2000 * (int)System.Math.Log(speed, 2);
-            //Obstacle1
-            recObstacleH1.X = recObstacleH1.X - speed + move1;
-            recObstacleD1.X = recObstacleD1.X - speed + move1;
-            recObstacleH1.Height = 24 + level1;
-            recObstacleD1.Y = recObstacleH1.Height + recSquare.Height;
-            recObstacleD1.Height = 768 - recObstacleD1.Y;
-            //Obstacle2
-            recObstacleH2.X = recObstacleH2.X - speed + move2;
-            recObstacleD2.X = recObstacleD2.X - speed + move2;
-            recObstacleH2.Height = 24 + level2;
-            recObstacleD2.Y = recObstacleH2.Height + recSquare.Height;
-            recObstacleD2.Height = 768 - recObstacleD2.Y;
-            //Obstacle3
-            recObstacleH3.X = recObstacleH3.X - speed + move3;
-            recObstacleD3.X = recObstacleD3.X - speed + move3;
-            recObstacleH3.Height = 24 + level3;
-            recObstacleD3.Y = recObstacleH3.Height + recSquare.Height;
-            recObstacleD3.Height = 768 - recObstacleD3.Y;
-            //Obstacle4
-            recObstacleH4.X = recObstacleH4.X - speed + move4;
-            recObstacleD4.X = recObstacleD4.X - speed + move4;
-            recObstacleH4.Height = 24 + level4;
-            recObstacleD4.Y = recObstacleH4.Height + recSquare.Height;
-            recObstacleD4.Height = 768 - recObstacleD4.Y;
-            //moving
-            if (recObstacleD1.X <= -60)
+            //scoring
+            if (recObstacleD1.X == 0 || recObstacleD2.X == 0 || recObstacleD3.X == 0 || recObstacleD4.X == 0)
             {
-                move1 = move1 + 1368;
-                level1 = randLevel();
-            }
-            if (recObstacleD2.X <= -60)
-            {
-                move2 = move2 + 1368;
-                level2 = randLevel();
-            }
-            if (recObstacleD3.X <= -60)
-            {
-                move3 = move3 + 1368;
-                level3 = randLevel();
-            }
-            if (recObstacleD4.X <= -60)
-            {
-                move4 = move4 + 1368;
-                level4 = randLevel();
-            }
-            
-        }
-
-        private void CounterAnim_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            speed++;
-        }
-
-        private void Collision()
-        {
-            //Obstacle1
-            if (recSquare.Y < recObstacleD1.Y && recSquare.Y + 60 > recObstacleH1.Height)
-            {
-
-            }
-            else if (recSquare.X + 60 > recObstacleH1.X && recSquare.X < recObstacleH1.X + 60)
-            {
-                scene = CurrentScene.Menu;
-            }
-            //Obstacle2
-            if (recSquare.Y < recObstacleD2.Y && recSquare.Y + 60 > recObstacleH2.Height)
-            {
-
-            }
-            else if (recSquare.X + 60 > recObstacleH2.X && recSquare.X < recObstacleH2.X + 60)
-            {
-                scene = CurrentScene.Menu;
-            }
-            //Obstacle3
-            if (recSquare.Y < recObstacleD3.Y && recSquare.Y + 60 > recObstacleH3.Height)
-            {
-
-            }
-            else if (recSquare.X + 60 > recObstacleH3.X && recSquare.X < recObstacleH3.X + 60)
-            {
-                scene = CurrentScene.Menu;
-            }
-            //Obstacle4
-            if (recSquare.Y < recObstacleD4.Y && recSquare.Y + 60 > recObstacleH4.Height)
-            {
-
-            }
-            else if (recSquare.X + 60 > recObstacleH4.X && recSquare.X < recObstacleH4.X + 60)
-            {
-                scene = CurrentScene.Menu;
+                score++;
             }
         }
-
-        private void Changes()
-        {
-            if (recSquare.X > recObstacleH1.X + 60 && recSquare.X + 60 < recObstacleH2.X)
-            {
-                change = level2;
-            }
-            if (recSquare.X > recObstacleH2.X + 60 && recSquare.X + 60 < recObstacleH3.X)
-            {
-                change = level3;
-            }
-            if (recSquare.X > recObstacleH3.X + 60 && recSquare.X + 60 < recObstacleH4.X)
-            {
-                change = level4;
-            }
-            if (recSquare.X > recObstacleH4.X + 60 && recSquare.X + 60 < recObstacleH1.X)
-            {
-                change = level1;
-            }
-        }
-
         private int randLevel()
         { 
             var rand = new System.Random();
@@ -167,116 +50,69 @@ namespace SzaloneCyfry
 
             return c;
         }
-
-        private void createObstacle()
-        {
-            //Obstacle1            
-            recObstacleH1.X = tmp * number;
-            recObstacleH1.Y = 0;
-            recObstacleH1.Height = 24;
-            recObstacleH1.Width = 60;
-            recObstacleD1.X = tmp * number;
-            recObstacleD1.Y = recObstacleH1.Height + recSquare.Height;
-            recObstacleD1.Height = 768 - recObstacleD1.Y;
-            recObstacleD1.Width = 60;
-            //Obstacle2
-            recObstacleH2.X = tmp* (number+1);
-            recObstacleH2.Y = 0;
-            recObstacleH2.Height = 24;
-            recObstacleH2.Width = 60;
-            recObstacleD2.X = tmp* (number + 1);
-            recObstacleD2.Y = recObstacleH2.Height + recSquare.Height;
-            recObstacleD2.Height = 768 - recObstacleD2.Y;
-            recObstacleD2.Width = 60;
-            //Obstacle3
-            recObstacleH3.X = tmp * (number + 2);
-            recObstacleH3.Y = 0;
-            recObstacleH3.Height = 24;
-            recObstacleH3.Width = 60;
-            recObstacleD3.X = tmp * (number + 2);
-            recObstacleD3.Y = recObstacleH3.Height + recSquare.Height;
-            recObstacleD3.Height = 768 - recObstacleD3.Y;
-            recObstacleD3.Width = 60;
-            //Obstacle4
-            recObstacleH4.X = tmp * (number + 3);
-            recObstacleH4.Y = 0;
-            recObstacleH4.Height = 24;
-            recObstacleH4.Width = 60;
-            recObstacleD4.X = tmp * (number + 3);
-            recObstacleD4.Y = recObstacleH4.Height + recSquare.Height;
-            recObstacleD4.Height = 768 - recObstacleD4.Y;
-            recObstacleD4.Width = 60;
-        }
-        private void ChangeTexture()
-        {
-            if (change == 0) texSquare = Content.Load<Texture2D>("media/sq9");
-            else if (change == 60) texSquare = Content.Load<Texture2D>("media/sq8");
-            else if (change == 2 * 60) texSquare = Content.Load<Texture2D>("media/sq7");
-            else if (change == 3 * 60) texSquare = Content.Load<Texture2D>("media/sq6");
-            else if (change == 4 * 60) texSquare = Content.Load<Texture2D>("media/sq5");
-            else if (change == 5 * 60) texSquare = Content.Load<Texture2D>("media/sq4");
-            else if (change == 6 * 60) texSquare = Content.Load<Texture2D>("media/sq3");
-            else if (change == 7 * 60) texSquare = Content.Load<Texture2D>("media/sq2");
-            else if (change == 8 * 60) texSquare = Content.Load<Texture2D>("media/sq1");
-            else if (change == 9 * 60) texSquare = Content.Load<Texture2D>("media/sq0");
-        }
-
         private void LoadContentGame()
         {
             texMenuButton = Content.Load<Texture2D>("media/menu");
             texSquare = Content.Load<Texture2D>("media/square");
             texScore = Content.Load<Texture2D>("media/score");
-            texGround = Content.Load<Texture2D>("media/score");
-            texObstacle = Content.Load<Texture2D>("media/score");
+            texGround = Content.Load<Texture2D>("media/ground");
+            texObstacleD = Content.Load<Texture2D>("media/obstacleD");
+            texObstacleH = Content.Load<Texture2D>("media/obstacleH");
             recSquare.Height = 60;
             recSquare.Width = 60;
             recSquare.X = GraphicsDevice.Viewport.Width >> 4;
-            recSquare.Y = randLevel();
+            recSquare.Y = randLevel()+24;
             level1 = randLevel();
             level2 = randLevel();
             level3 = randLevel();
             level4 = randLevel();
             change = level1;
-            font = Content.Load<SpriteFont>("File");
+            font = Content.Load<SpriteFont>("Score");
+            texBackground = Content.Load<Texture2D>("media/background");
         }
         private void DrawGame()
         {
             _spriteBatch.Begin();
-            _spriteBatch.Draw(texObstacle, recObstacleH1, Color.Blue);
-            _spriteBatch.Draw(texObstacle, recObstacleD1, Color.Blue);
-            _spriteBatch.Draw(texObstacle, recObstacleH2, Color.Blue);
-            _spriteBatch.Draw(texObstacle, recObstacleD2, Color.Blue);
-            _spriteBatch.Draw(texObstacle, recObstacleH3, Color.Blue);
-            _spriteBatch.Draw(texObstacle, recObstacleD3, Color.Blue);
-            _spriteBatch.Draw(texObstacle, recObstacleH4, Color.Blue);
-            _spriteBatch.Draw(texObstacle, recObstacleD4, Color.Blue);
-            _spriteBatch.Draw(texGround, recGround, Color.Black);
+            _spriteBatch.Draw(texBackground, recBackground, colBackground);
+            _spriteBatch.Draw(texObstacleH, recObstacleH1, blank);
+            _spriteBatch.Draw(texObstacleD, recObstacleD1, blank);
+            _spriteBatch.Draw(texObstacleH, recObstacleH2, blank);
+            _spriteBatch.Draw(texObstacleD, recObstacleD2, blank);
+            _spriteBatch.Draw(texObstacleH, recObstacleH3, blank);
+            _spriteBatch.Draw(texObstacleD, recObstacleD3, blank);
+            _spriteBatch.Draw(texObstacleH, recObstacleH4, blank);
+            _spriteBatch.Draw(texObstacleD, recObstacleD4, blank);
+            _spriteBatch.Draw(texGround, recGround, blank);
             _spriteBatch.Draw(texMenuButton, recMenuButton, colMenuButton);
             _spriteBatch.Draw(texSquare, recSquare, blank);
             _spriteBatch.Draw(texScore, recScore, blank);
-            _spriteBatch.DrawString(font, "Speed: "+log, vecSpeed, Color.Black);
-            _spriteBatch.DrawString(font, "Speed: " + speed, vecSpeedl, Color.Black);
+            _spriteBatch.DrawString(font, "Score: " + score, vecSpeed, Color.DodgerBlue);
             _spriteBatch.End();
+            UpdateCursorPosition();
+            ButtonEvents();
         }
         private void UpdateGame()
         {
-            //Menu
-            recMenuButton.X = GraphicsDevice.Viewport.Width >> 4;
-            recMenuButton.Y = GraphicsDevice.Viewport.Height - (GraphicsDevice.Viewport.Height >> 5) - 2*recMenuButton.Size.Y;
-            recMenuButton.Height = GraphicsDevice.Viewport.Height >> 4;
-            recMenuButton.Width = GraphicsDevice.Viewport.Width >> 4;
+            //Background
+            recBackground.X = 0;
+            recBackground.Y = 0;
+            recBackground.Height = 768;
+            recBackground.Width = 1024;
+            //Menu czcionka Lithos Pro weight=850
+            recMenuButton.X = 38;
+            recMenuButton.Y = 642;
+            recMenuButton.Height = 60;
+            recMenuButton.Width = 112;
             //Score
             recScore.X = (GraphicsDevice.Viewport.Width >> 4) - (GraphicsDevice.Viewport.Height >> 5);
             recScore.Y = GraphicsDevice.Viewport.Height - (GraphicsDevice.Viewport.Height >> 6) - recScore.Size.Y;
             recScore.Height = GraphicsDevice.Viewport.Height >> 4;
             recScore.Width = (GraphicsDevice.Viewport.Height >> 4) + (GraphicsDevice.Viewport.Width >> 4);
             //Speed
-            vecSpeed.X = recScore.X;
-            vecSpeed.Y = recScore.Y;
-            vecSpeedl.X = recScore.X;
-            vecSpeedl.Y = recScore.Y+20;
+            vecSpeed.X = recScore.X+3;
+            vecSpeed.Y = recScore.Y+10;
             //Ground
-            recGround.X = 0;
+            recGround.X = 0; 
             recGround.Y = 648+24;
             recGround.Height = 756 - 648;
             recGround.Width = 1024;
@@ -285,32 +121,15 @@ namespace SzaloneCyfry
             animObstacle();
             //Square
             temp = 60;
-            KeyboardState state = Keyboard.GetState();
-            if (state.IsKeyDown(Keys.D9))
-                recSquare.Y = 24;
-            if (state.IsKeyDown(Keys.D8))
-                recSquare.Y = 24 + temp;
-            if (state.IsKeyDown(Keys.D7))
-                recSquare.Y = 24 + temp * 2;
-            if (state.IsKeyDown(Keys.D6))
-                recSquare.Y = 24 + temp * 3;
-            if (state.IsKeyDown(Keys.D5))
-                recSquare.Y = 24 + temp * 4;
-            if (state.IsKeyDown(Keys.D4))
-                recSquare.Y = 24 + temp * 5;
-            if (state.IsKeyDown(Keys.D3))
-                recSquare.Y = 24 + temp * 6; 
-            if (state.IsKeyDown(Keys.D2))
-                recSquare.Y = 24 + temp * 7;
-            if (state.IsKeyDown(Keys.D1))
-                recSquare.Y = 24 + temp * 8;
-            if (state.IsKeyDown(Keys.D0))
-                recSquare.Y = 24 + temp * 9;
-            UpdateCursorPosition();
-            ButtonEvents();
-            //Collision();
+            Control();
+            Collision();
             Changes();
-            ChangeTexture();
+            ChangeTexture(); //czcionka SimSun
+            Scoring();
+            if (score == 30)
+            {
+                scene = CurrentScene.Win;
+            }
         }
     }
 }
