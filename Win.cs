@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace SzaloneCyfry
 {
@@ -13,9 +12,7 @@ namespace SzaloneCyfry
             EndScore = Content.Load<SpriteFont>("EndScore");
             EndWin = Content.Load<SpriteFont>("EndWin");
             texBackground = Content.Load<Texture2D>("media/background");
-
         }
-
         private void DrawWin()
         {
             _spriteBatch.Begin();
@@ -27,6 +24,7 @@ namespace SzaloneCyfry
         }
         private void UpdateWin()
         {
+            //location & dimensions
             //Background
             recBackground.X = 0;
             recBackground.Y = 0;
@@ -38,11 +36,12 @@ namespace SzaloneCyfry
             //TextScore
             vecEndScore.X = 256 + 108;
             vecEndScore.Y = GraphicsDevice.Viewport.Height / 2;
-            //Quit
+            //QuitButton
             recQuitButton.X = GraphicsDevice.Viewport.Width / 2 - recQuitButton.Width / 2;
             recQuitButton.Y = 576;
             recQuitButton.Height = 125;
             recQuitButton.Width = 250;
+            //methods
             UpdateCursorPosition();
             ButtonEvents();
         }
